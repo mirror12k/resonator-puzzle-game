@@ -4,7 +4,6 @@ use warnings;
 
 use IO::File;
 use MIME::Base64;
-use JSON qw/ decode_json encode_json /;
 
 my $opt_js_minimize = 1;
 
@@ -58,7 +57,6 @@ foreach my $arg ($js_raw =~ m#assets/[^'"]+\.wav#sg) {
 foreach my $arg ($js_raw =~ m#lvls/[^'"]+\.(?:ldtk|json)#sg) {
 	warn "inlining json file: $arg";
 	my $data = `cat $arg`;
-	$data = encode_json(decode_json($data));
 	$file_inlines .= "<script type='application/json' data-url='$arg'>$data</script>\n";
 }
 my @font_paths = ($css_raw =~ m#\.\./[^'"]+\.ttf#sg);
