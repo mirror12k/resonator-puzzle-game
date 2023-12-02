@@ -6,7 +6,6 @@ jobs:
     name: Build job for npm projects
     steps:
       - uses: actions/checkout@v3
-      - run: cpan install JSON
       - run: ./min.pl index.html > dist
       - name: Clone and push build
         env:
