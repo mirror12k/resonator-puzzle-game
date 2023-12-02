@@ -1,0 +1,27 @@
+on: [push]
+
+jobs:
+  build_job:
+    runs-on: ubuntu-latest
+    name: Build job for npm projects
+    steps:
+      - uses: actions/checkout@v3
+      - run: cpan install JSON
+      - run: ./min.pl index.html > dist
+      - name: Clone and push build
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+          FILEPATH: ${{ secrets.FILEPATH }}
+        run: |
+          git clone --single-branch "https://github.com/mirror12k/mirror12k.github.io.git" "upload_project"
+          ls upload_project
+          rm -rf upload_project/$FILEPATH
+          mv dist upload_project/$FILEPATH
+          git config --global user.email "robot@robot.local"
+          git config --global user.name "robot"
+          cd upload_project
+          git add $FILEPATH
+          git commit -m 'automated build push!'
+          git push "https://x-access-token:$API_TOKEN_GITHUB@github.com/mirror12k/mirror12k.github.io.git"
+          git status
+
